@@ -1,25 +1,40 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
+import { BrowserRouter, Routes , Route, useNavigate } from "react-router-dom";
+import routes, { IRoute, PAGE_KEYS, findRouteByKey } from "./routes";
 
-function App() {
+const App = () => {
+  /*const navigate = useNavigate();
+
+  const goPage = (pageKey: PAGE_KEYS) => {
+    const findRoute = findRouteByKey(pageKey);
+    if(findRoute) {
+      navigate(findRoute.path);
+    }else {
+      //TODO :: notFoundPage Move
+      navigate("/");
+    }
+  };*/
+
+  const getRoutes = (routes: IRoute[]) => {
+    return routes.map((prop, key) => {
+      return (
+        <Route
+          key={key}
+          path={prop.path}
+          element={ prop.element }
+        />
+      )
+    });
+  };
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        { getRoutes(routes) }
+      </Routes>
+    </BrowserRouter>
   );
 }
 
