@@ -1,23 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, {SyntheticEvent, useEffect, useState} from "react";
 import Validation, {IErrorBack} from "../utils/validation";
 
 type useFormProps = {
   initialValues: any,
   onSubmit: Function,
-  validation: Validation | null
+  onValidFailed?: (errors: IErrorBack[]) => void,
+  validation?: Validation
 };
 
-function useForm({ initialValues, onSubmit, validation }: useFormProps) {
+type handleEventType = {
+  target: {
+    name: string,
+    value: any,
+  }
+}
+
+function useForm({ initialValues, onSubmit, validation, onValidFailed }: useFormProps) {
   const [values, setValues] = useState(initialValues);
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<IErrorBack[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement> | handleEventType) => {
     const { name, value } = event.target;
     setValues({ ...values, [name]: value });
   };
 
-  const handleSubmit = async (event: React.SyntheticEvent) => {
+  const handleSubmit = (event: React.SyntheticEvent) => {
     setIsLoading(true);
     event.preventDefault();
     if(!!validation) {
@@ -28,8 +36,10 @@ function useForm({ initialValues, onSubmit, validation }: useFormProps) {
   useEffect(() => {
     (async () => {
       if (isLoading) {
-        if (Object.keys(errors).length === 0) {
+        if (errors.length === 0) {
           await onSubmit(values);
+        }else {
+          if(onValidFailed) onValidFailed(errors);
         }
         setIsLoading(false);
       }
@@ -58,6 +68,7 @@ function useForm({ initialValues, onSubmit, validation }: useFormProps) {
     isLoading,
     handleChange,
     handleSubmit,
+    setValues
   };
 }
 

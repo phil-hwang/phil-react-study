@@ -1,6 +1,6 @@
 export interface IValidationField {
   key: string;
-  rule: (a: string) => boolean;
+  rule: (value: string, values?: any) => boolean;
   errorMessage: string;
 }
 
@@ -22,7 +22,7 @@ class Validation {
     this.clearErrorBack();
     this.validationList.forEach( validation => {
       const value = values[validation.key];
-      if(!validation.rule(value)) {
+      if(!validation.rule(value, values)) {
         this.errorBack.push({
           key: validation.key,
           message: validation.errorMessage

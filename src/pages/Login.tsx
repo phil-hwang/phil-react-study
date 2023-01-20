@@ -25,10 +25,11 @@ const Login = () => {
       key: "password",
       rule: min(5),
       errorMessage: '패스워드는 최소 5 글자 입니다.'
-    }
+    },
+
   ]);
 
-  const { values, handleChange, handleSubmit, errors, getErrorMessage, isLoading } = useForm({
+  const { values, handleChange, handleSubmit, getErrorMessage } = useForm({
     initialValues: {email: "", password: ""},
     onSubmit: () => {},
     validation: validation
@@ -90,7 +91,7 @@ const Login = () => {
                     <div className="mt-3">
                       <p className="mb-0  text-center">
                         Don't have an account?{" "}
-                        <Link className="text-primary fw-bold" to="">
+                        <Link className="text-primary fw-bold" to="/member-register">
                           Sign Up
                         </Link>
                       </p>

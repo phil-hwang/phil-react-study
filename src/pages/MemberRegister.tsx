@@ -1,9 +1,15 @@
-import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
+import React, { useCallback } from "react";
+import { Link } from "react-router-dom";
+import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import useForm from "../hooks/useForm";
 import Validation from "../utils/validation";
-import {email, min, required} from "../utils/validation/rules";
+import { email, min, required, password } from "../utils/validation/rules";
+
 
 const MemberRegister = () => {
+  const { executeRecaptcha } = useGoogleReCaptcha();
+
   const validation = new Validation([
     {
       key: "name",
@@ -27,8 +33,8 @@ const MemberRegister = () => {
     },
     {
       key: "password",
-      rule: min(5),
-      errorMessage: '패스워드는 최소 5 글자 입니다.'
+      rule: password,
+      errorMessage: '패스워드 조건이 다릅니다.'
     },
     {
       key: "confirmPassword",
@@ -37,19 +43,34 @@ const MemberRegister = () => {
     },
     {
       key: "confirmPassword",
-      rule: min(5),
-      errorMessage: '패스워드는 최소 5 글자 입니다.'
+      rule: password,
+      errorMessage: '패스워드 조건이 다릅니다.'
+    },
+    {
+      key: "confirmPassword",
+      rule: (value, values) => {
+        return values['password'] === value;
+      },
+      errorMessage: '패스워드가 다릅니다.'
     }
   ]);
 
-  const { values, handleChange, handleSubmit, errors, getErrorMessage, isLoading } = useForm({
+  const registerMember = useCallback(async () => {
+    if(!executeRecaptcha) { return; }
+    const token = await executeRecaptcha('register');
+
+    // TODO Login api request..
+
+  }, [executeRecaptcha]);
+
+  const { values, handleChange, handleSubmit, getErrorMessage } = useForm({
     initialValues: {
       name: "",
       email: "",
       password: "",
       confirmPassword: ""
     },
-    onSubmit: () => {},
+    onSubmit: registerMember,
     validation: validation
   });
 
@@ -71,9 +92,10 @@ const MemberRegister = () => {
                         <Form.Control
                           type="text"
                           placeholder="Enter Name"
+                          name="name"
                           value={ values.name }
                           onChange={ handleChange }
-                          isInvalid={ getErrorMessage('name').length > 0 }
+                          isInvalid={ !!getErrorMessage('name') }
                         />
                         <Form.Control.Feedback type="invalid"  className={"float-left"}>{ getErrorMessage('name') }</Form.Control.Feedback>
                       </Form.Group>
@@ -84,9 +106,10 @@ const MemberRegister = () => {
                         <Form.Control
                           type="email"
                           placeholder="Enter email"
+                          name="email"
                           value={ values.email }
                           onChange={ handleChange }
-                          isInvalid={ getErrorMessage('email').length > 0 }
+                          isInvalid={ !!getErrorMessage('email') }
                         />
                         <Form.Control.Feedback type="invalid"  className={"float-left"}>{ getErrorMessage('email') }</Form.Control.Feedback>
                       </Form.Group>
@@ -96,9 +119,10 @@ const MemberRegister = () => {
                         <Form.Control
                           type="password"
                           placeholder="Password"
+                          name="password"
                           value={ values.password }
                           onChange={ handleChange }
-                          isInvalid={ getErrorMessage('password').length > 0 }
+                          isInvalid={ !!getErrorMessage('password') }
                         />
                         <Form.Control.Feedback type="invalid"  className={"float-left"}>{ getErrorMessage('password') }</Form.Control.Feedback>
                       </Form.Group>
@@ -107,9 +131,10 @@ const MemberRegister = () => {
                         <Form.Control
                           type="password"
                           placeholder="Password"
+                          name="confirmPassword"
                           value={ values.confirmPassword }
                           onChange={ handleChange }
-                          isInvalid={ getErrorMessage('confirmPassword').length > 0 }
+                          isInvalid={ !!getErrorMessage('confirmPassword') }
                         />
                         <Form.Control.Feedback type="invalid"  className={"float-left"}>{ getErrorMessage('confirmPassword') }</Form.Control.Feedback>
                       </Form.Group>
@@ -124,9 +149,9 @@ const MemberRegister = () => {
                     <div className="mt-3">
                       <p className="mb-0  text-center">
                         Already have an account??{' '}
-                        <a href="{''}" className="text-primary fw-bold">
+                        <Link to='/login'>
                           Sign In
-                        </a>
+                        </Link>
                       </p>
                     </div>
                   </div>
@@ -139,5 +164,6 @@ const MemberRegister = () => {
     </div>
   )
 }
+
 
 export default MemberRegister;

@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { faHome, faPowerOff, faUser, faLineChart, IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { Login, Dashboard, MemberRegister } from "../pages";
 
 
@@ -6,7 +6,7 @@ export interface IRoute {
   key: number,
   path: string,
   title: string,
-  icon: string,
+  icon: IconDefinition,
   element: any,
   layout: any,
 };
@@ -24,33 +24,33 @@ const routes: IRoute[] = [
     key: PAGE_KEYS.LOGIN,
     path: '/',
     element: <Login/>,
-    icon: '',
+    icon: faHome,
     layout: '',
-    title: ''
+    title: 'Home'
   },
   {
     key: PAGE_KEYS.LOGIN,
     path: '/login',
     element: <Login/>,
-    icon: '',
+    icon: faPowerOff,
     layout: '',
-    title: ''
+    title: 'Login'
   },
   {
     key: PAGE_KEYS.MEMBER_REGISTER,
     path: '/member-register',
     element: <MemberRegister/>,
-    icon: '',
+    icon: faUser,
     layout: '',
-    title: ''
+    title: 'MemberRegister'
   },
   {
     key: PAGE_KEYS.DASHBOARD,
     path: '/dashboard',
     element: <Dashboard/>,
-    icon: '',
+    icon: faLineChart,
     layout: '',
-    title: ''
+    title: 'Dashboard'
   }
 ];
 

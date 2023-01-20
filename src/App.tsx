@@ -1,20 +1,11 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import { BrowserRouter, Routes , Route, useNavigate } from "react-router-dom";
-import routes, { IRoute, PAGE_KEYS, findRouteByKey } from "./routes";
-
+import { BrowserRouter, Routes , Route } from "react-router-dom";
+import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
+import routes, { IRoute } from "./routes";
+import Sidebar from "./components/templates/Sidebar";
 const App = () => {
-  /*const navigate = useNavigate();
-
-  const goPage = (pageKey: PAGE_KEYS) => {
-    const findRoute = findRouteByKey(pageKey);
-    if(findRoute) {
-      navigate(findRoute.path);
-    }else {
-      //TODO :: notFoundPage Move
-      navigate("/");
-    }
-  };*/
+  const reCaptchaKey = process.env.REACT_APP_GOOGLE_RECAPCHA_SITE_KEY;
 
   const getRoutes = (routes: IRoute[]) => {
     return routes.map((prop, key) => {
@@ -30,11 +21,18 @@ const App = () => {
 
 
   return (
-    <BrowserRouter>
-      <Routes>
-        { getRoutes(routes) }
-      </Routes>
-    </BrowserRouter>
+    <GoogleReCaptchaProvider reCaptchaKey={ reCaptchaKey || '' } >
+      <BrowserRouter>
+        <div className="wrapper">
+          <Sidebar/>
+          <div className="main-panel">
+            <Routes>
+              { getRoutes(routes) }
+            </Routes>
+          </div>
+        </div>
+      </BrowserRouter>
+    </GoogleReCaptchaProvider>
   );
 }
 
