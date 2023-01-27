@@ -16,9 +16,9 @@ type IMatches = {
 
 function useMediaQuery(query: IQuery): IMatches {
   const [matches, setMatches] = useState<IMatches>({
-    isSmall: false,
-    isMedium: false,
-    isLarge: false,
+    isSmall: window.matchMedia(query.small).matches,
+    isMedium: window.matchMedia(query.medium).matches,
+    isLarge: window.matchMedia(query.large).matches,
   });
 
   const handleChange = (e: MediaQueryListEvent, key?: IMediaType) => {
