@@ -1,19 +1,20 @@
 import classnames from 'classnames'
 import './style.scss'
-import {ChangeEvent} from "react";
+import React from "react";
 
-type Props = {
-  type: 'text' | 'password',
+type IInputProps = {
+  type: 'text' | 'password' | 'tel',
+  name: string,
   value: string,
   className: string,
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void,
-  onFocus: (event: ChangeEvent<HTMLInputElement>) => void,
-  onClick: (event: MouseEvent<HTMLInputElement, MouseEvent>) => void,
-  onEnterKeyPress: (event: ChangeEvent<HTMLInputElement>) => void,
-  placeholder: string
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void,
+  onFocus?: (event: React.ChangeEvent<HTMLInputElement>) => void,
+  onClick?: (event:  React.MouseEvent<HTMLInputElement, MouseEvent>) => void,
+  onEnterKeyPress?: (event: React.KeyboardEvent) => void,
+  placeholder?: string
 }
 
-const Input = (props: Props) => {
+const Input = (props: IInputProps) => {
   const {
     type,
     value,
@@ -28,7 +29,13 @@ const Input = (props: Props) => {
   const classProps: string = classnames(
     `input-${type}`,
     className
-  )
+  );
+
+  const handleOnKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && onEnterKeyPress) {
+      onEnterKeyPress(e);
+    }
+  };
 
   return (
     <input
@@ -38,6 +45,8 @@ const Input = (props: Props) => {
       placeholder={ placeholder }
       onChange={ onChange }
       onClick={ onClick }
+      onFocus={ onFocus }
+      onKeyPress={ handleOnKeyPress }
     />
   )
 }
